@@ -9,10 +9,10 @@ public:
 	I() { }
 	virtual ~I() { }
 	
-	int test() = 0;
-}
+	virtual int test() = 0;
+};
 
-class A {
+class A : public I {
 public:
 	int test() override {
 		return 42;
@@ -24,7 +24,7 @@ public:
 TEST(MonoInterface, All) {
 	using MonoI = cpp::mono_interface<I>;
 	
-	MonoI mono(new A());
+	MonoI mono(std::unique_ptr<I>(new A()));
   EXPECT_EQ(42, mono->test());
   EXPECT_EQ(42, (*mono).test());
   EXPECT_EQ(42, (&mono)->test());
@@ -41,13 +41,16 @@ using HANDLE = void*;
 HANDLE CreateHandle() { return reinterpret_cast<HANDLE>(-1); }
 void DestroyHandle(HANDLE) { }
 
+using Handle = cpp::resource_handler<HANDLE, struct HandleTag>;
+
+namespace cpp {
+template<> void Handle::cleanup() noexcept {
+	if (resource_)
+	  DestroyHandle(resource_);
+}
+}
+
 TEST(ResourceHandler, All) {
-	using Handle = cpp::resource_handler<HANDLE, struct HandleTag>;
-	template<> void Handle::Cleanup() noexcept {
-		if (resource_)
-		  DestroyHandle(resource_);
-	}
-	
 	Handle h(CreateHandle());
 }
 

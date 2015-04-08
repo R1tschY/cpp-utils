@@ -1,0 +1,10 @@
+# Actually create targets: EXEcutables and libraries.
+ADD_BII_TARGETS()
+
+# C++11
+IF(APPLE)
+     TARGET_COMPILE_OPTIONS(${BII_BLOCK_TARGET} INTERFACE "-std=c++11 -stdlib=libc++")
+ELSEIF (WIN32 OR UNIX)
+     TARGET_COMPILE_OPTIONS(${BII_BLOCK_TARGET} INTERFACE "-std=c++11")
+ENDIF(APPLE)
+

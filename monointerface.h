@@ -32,7 +32,7 @@ class mono_interface final
 public:
   explicit mono_interface(std::unique_ptr<AbstractClass> new_instance) 
   {
-    set(new_instance);
+    set(std::move(new_instance));
   }
   
   mono_interface() 
@@ -40,12 +40,12 @@ public:
     assert(instance_ != nullptr);
   }
   
-  AbstractClass& operator->() {
-  	return *instance_;
+  AbstractClass* operator->() {
+  	return pointer();
   }
   
-  const AbstractClass& operator->() const {
-  	return *instance_;
+  const AbstractClass* operator->() const {
+  	return pointer();
   }
   
   AbstractClass& operator*() {
@@ -80,7 +80,7 @@ public:
     assert(new_instance != nullptr);
     assert(instance_ == nullptr);
       
-    instance_ = new_instance;
+    instance_ = std::move(new_instance);
   }
 
 private:
