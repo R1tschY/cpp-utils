@@ -20,18 +20,53 @@
  * THE SOFTWARE.
  */
 
-#ifndef UTILS_META_CORE_H_
-#define UTILS_META_CORE_H_
+#ifndef BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_MEMORY_NOT_NULL_H_
+#define BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_MEMORY_NOT_NULL_H_
+
+#include "../assert.h"
+#include "../detail/normalize.h"
 
 namespace cpp {
 
 template<typename T>
-using type = typename T::type;
+class not_null
+{
+public:
+  not_null(T t) cpp_attribute_nonnull(1)
+  : t_(t)
+  {
+    cpp_assert(t != nullptr);
+  }
 
-/// from Walter E. Brown's talk "Modern Template Metaprogramming: A Compendium, Part II" at CppCon 2014
-template<typename ...>
-using void_t = void;
+  not_null(const maybe_null<T>& t)
+  : t_(t.get_wrapped())
+  {
+    cpp_assert(t != nullptr);
+  }
+
+  not_null(maybe_null<T>&& t)
+  : t_(std::move(t.get_wrapped()))
+  {
+    cpp_assert(t != nullptr);
+  }
+
+  auto get() cpp_attribute_returns_nonnull { return &(*t_); }
+  T& get_wrapped() { return t_; }
+  const T& get_wrapped() const { return t_; }
+  auto operator*() { return *t_; }
+  auto operator*() const { return *t_; }
+  auto operator->() cpp_attribute_returns_nonnull { return &(*t_); }
+  auto operator->() cpp_attribute_returns_nonnull const { return &(*t_); }
+
+  explicit auto operator bool()
+  {
+    return true;
+  }
+
+private:
+  T t_;
+};
 
 } // namespace cpp
 
-#endif /* UTILS_META_CORE_H_ */
+#endif /* BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_MEMORY_NOT_NULL_H_ */

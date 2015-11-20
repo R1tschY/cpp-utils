@@ -29,6 +29,8 @@
 #include <boost/mpl/vector.hpp>
 #include "core.h"
 
+namespace cpp {
+
 template<typename TypeList>
 class Factory {
 public:
@@ -75,6 +77,6 @@ private:
   };
 };
 
-
+} // namespace cpp
 
 #endif /* UTILS_FACTORY_H_ */

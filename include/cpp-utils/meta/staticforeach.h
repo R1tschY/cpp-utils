@@ -27,6 +27,8 @@
 #include <boost/mpl/next_prior.hpp>
 #include <boost/mpl/vector.hpp>
 
+namespace cpp {
+
 namespace detail {
 
 template < typename Begin, typename End, typename F >
@@ -64,5 +66,7 @@ void static_for_each( )
 
   detail::static_for_each< begin, end, F >::apply();
 }
+
+} // namespace cpp
 
 #endif /* UTILS_META_STATICFOREACH_H_ */

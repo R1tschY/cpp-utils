@@ -1,11 +1,12 @@
 #ifndef LIBS_CPP_UTILS_ARRAY_VIEW_H_
 #define LIBS_CPP_UTILS_ARRAY_VIEW_H_
 
-#include "../../3th-party/gsl/array_view.h"
+#include "../../3th-party/gsl/include/span.h"
 
 namespace cpp {
 
-using Guide::array_view;
+template<typename Args...>
+using array_view = gsl::span<Args...>;
 
 } // namespace cpp
 

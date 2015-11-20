@@ -20,18 +20,32 @@
  * THE SOFTWARE.
  */
 
-#ifndef UTILS_META_CORE_H_
-#define UTILS_META_CORE_H_
+#ifndef BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_ASSERT_H_
+#define BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_ASSERT_H_
+
+#include "preprocessor.h"
 
 namespace cpp {
 
-template<typename T>
-using type = typename T::type;
+#ifndef NDEBUG
+# define cpp_assert(expr) (expr) \
+  ? CPP_NOOP \
+  : CPP_ASSERT_FAIL(CPP_STRINGIFY(expr), __PRETTY_FUNCTION__, __LINE__, __FILE__)
+#else
+# define cpp_assert(expr) CPP_NOOP
+#endif
 
-/// from Walter E. Brown's talk "Modern Template Metaprogramming: A Compendium, Part II" at CppCon 2014
-template<typename ...>
-using void_t = void;
+void assert_fail_abort(const char* expr, const char* func, int line, const char* file);
+void assert_fail_throw(const char* expr, const char* func, int line, const char* file);
+
+#ifdef CPP_ASSERT_ABORT
+# define CPP_ASSERT_FAIL ::cpp::assert_fail_abort
+#elif defined(CPP_ASSERT_THROW)
+# define CPP_ASSERT_FAIL ::cpp::assert_fail_throw
+#else
+# define CPP_ASSERT_FAIL ::cpp::assert_fail_abort
+#endif
 
 } // namespace cpp
 
-#endif /* UTILS_META_CORE_H_ */
+#endif /* BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_ASSERT_H_ */

@@ -20,18 +20,19 @@
  * THE SOFTWARE.
  */
 
-#ifndef UTILS_META_CORE_H_
-#define UTILS_META_CORE_H_
+#ifndef R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_DETAIL_NORMALIZE_H_
+#define R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_DETAIL_NORMALIZE_H_
 
-namespace cpp {
+#ifdef __GCC__
+# define cpp_attribute_nonnull(...) __attribute__((nonnull(__VA_ARGS__)))
+#else
+# define cpp_attribute_nonnull(...)
+#endif
 
-template<typename T>
-using type = typename T::type;
+#ifdef __GCC__
+# define cpp_attribute_returns_nonnull __attribute__((returns_nonnull))
+#else
+# define cpp_attribute_returns_nonnull
+#endif
 
-/// from Walter E. Brown's talk "Modern Template Metaprogramming: A Compendium, Part II" at CppCon 2014
-template<typename ...>
-using void_t = void;
-
-} // namespace cpp
-
-#endif /* UTILS_META_CORE_H_ */
+#endif /* R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_DETAIL_NORMALIZE_H_ */

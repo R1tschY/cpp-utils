@@ -33,9 +33,9 @@ std::size_t length(const T(&) [N]) {
   return N;
 }
 
-template <typename Container, std::size_t N>
+template <typename Container, typename SizeType = decltype(t.size())>
 constexpr inline
-std::size_t length(const Container& t) {
+SizeType length(const Container& t) {
   return t.size();
 }
 

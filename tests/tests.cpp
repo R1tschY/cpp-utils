@@ -1,6 +1,6 @@
 #include "google/gtest/gtest.h"
-#include "../monointerface.h"
-#include "../resourcehandler.h"
+#include <cpp-utils/pattern/monointerface.h>
+#include <cpp-utils/resourcehandler.h>
 
 namespace {
 
@@ -54,7 +54,4 @@ TEST(ResourceHandler, All) {
 	Handle h(CreateHandle());
 }
 
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
+

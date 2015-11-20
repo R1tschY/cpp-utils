@@ -20,18 +20,37 @@
  * THE SOFTWARE.
  */
 
-#ifndef UTILS_META_CORE_H_
-#define UTILS_META_CORE_H_
+#ifndef BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_MEMORY_GET_H_
+#define BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_MEMORY_GET_H_
+
+#include <type_traits>
+#include "../meta/core.h"
 
 namespace cpp {
 
-template<typename T>
-using type = typename T::type;
+namespace detail {
 
-/// from Walter E. Brown's talk "Modern Template Metaprogramming: A Compendium, Part II" at CppCon 2014
-template<typename ...>
-using void_t = void;
+template<typename T, typename = void>
+struct has_get_method : std::false_type { };
+
+template<typename T>
+struct has_get_method<T, void_t<decltype(std::declval<T>().get())>>
+: std::true_type { };
+
+} // namespace detail
+
+template<typename T, typename std::enable_if<!detail::has_get_method<T>::value>::type* = nullptr>
+auto get(T&& t) -> decltype(t)
+{
+  return t;
+}
+
+template<typename T, typename std::enable_if<detail::has_get_method<T>::value>::type* = nullptr>
+auto get(T&& t) -> decltype(t.get())
+{
+  return t.get();
+}
 
 } // namespace cpp
 
-#endif /* UTILS_META_CORE_H_ */
+#endif /* BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_MEMORY_GET_H_ */
