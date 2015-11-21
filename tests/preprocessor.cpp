@@ -1,4 +1,4 @@
-#include "google/gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include <cpp-utils/preprocessor.h>
 
