@@ -1,24 +1,28 @@
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <memory>
 #include <cpp-utils/memory/get.h>
 
-TEST(Memory_get, unique_ptr)
+BOOST_AUTO_TEST_SUITE(Memory_Get_Tests)
+
+BOOST_AUTO_TEST_CASE(Memory_get_unique_ptr)
 {
   struct T { };
   std::unique_ptr<T> t;
-  EXPECT_EQ(true, (std::is_same<decltype(cpp::get(t)), T*>::value));
+  BOOST_CHECK_EQUAL(true, (std::is_same<decltype(cpp::get(t)), T*>::value));
 }
 
-TEST(Memory_get, pointer)
+BOOST_AUTO_TEST_CASE(Memory_get_pointer)
 {
   struct T { };
   T* t = nullptr;
-  //EXPECT_EQ(nullptr, cpp::get(t));
+  //BOOST_CHECK_EQUAL(nullptr, cpp::get(t));
 }
 
-TEST(Memory_get, int_)
+BOOST_AUTO_TEST_CASE(Memory_get_int)
 {
   int i = 42;
-  //EXPECT_EQ(42, cpp::get(i));
+  //BOOST_CHECK_EQUAL(42, cpp::get(i));
 }
+
+BOOST_AUTO_TEST_SUITE_END()

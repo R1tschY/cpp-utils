@@ -27,8 +27,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 # Testing
-enable_testing ()
-set(CMAKE_CTEST_COMMAND ctest --output-on-failure)
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+add_custom_target(check)
 add_subdirectory(tests)
 

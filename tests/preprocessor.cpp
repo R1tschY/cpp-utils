@@ -1,37 +1,39 @@
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <cpp-utils/preprocessor.h>
 
+BOOST_AUTO_TEST_SUITE(Preprocessor_Tests)
+
 // CPP_NARG
 
-TEST(Preprocessor_NARGS, Simple)
+BOOST_AUTO_TEST_CASE(Preprocessor_NARGS_Simple)
 {
-  EXPECT_EQ(0, CPP_NARGS());
-  EXPECT_EQ(1, CPP_NARGS(a));
-  EXPECT_EQ(2, CPP_NARGS(a, b));
-  EXPECT_EQ(12, CPP_NARGS(a, b, c, d, e, f, g, h, i, j, k, l));
+  BOOST_CHECK_EQUAL(0, CPP_NARGS());
+  BOOST_CHECK_EQUAL(1, CPP_NARGS(a));
+  BOOST_CHECK_EQUAL(2, CPP_NARGS(a, b));
+  BOOST_CHECK_EQUAL(12, CPP_NARGS(a, b, c, d, e, f, g, h, i, j, k, l));
 }
 
-TEST(Preprocessor_NARGS, Composed)
+BOOST_AUTO_TEST_CASE(Preprocessor_NARGS_Composed)
 {
-  EXPECT_EQ(2, CPP_NARGS(a, (b)));
-  EXPECT_EQ(2, CPP_NARGS(a, (b, c)));
-  EXPECT_EQ(1, CPP_NARGS((b, c)));
+  BOOST_CHECK_EQUAL(2, CPP_NARGS(a, (b)));
+  BOOST_CHECK_EQUAL(2, CPP_NARGS(a, (b, c)));
+  BOOST_CHECK_EQUAL(1, CPP_NARGS((b, c)));
 }
 
-TEST(Preprocessor_NARGS, StringConstant)
+BOOST_AUTO_TEST_CASE(Preprocessor_NARGS_StringConstant)
 {
-  EXPECT_EQ("0", CPP_STRINGIFY(CPP_NARGS()));
-  EXPECT_EQ("1", CPP_STRINGIFY(CPP_NARGS(a)));
-  EXPECT_EQ("2", CPP_STRINGIFY(CPP_NARGS(a, b)));
-  EXPECT_EQ("12", CPP_STRINGIFY(CPP_NARGS(a, b, c, d, e, f, g, h, i, j, k, l)));
+  BOOST_CHECK_EQUAL("0", CPP_STRINGIFY(CPP_NARGS()));
+  BOOST_CHECK_EQUAL("1", CPP_STRINGIFY(CPP_NARGS(a)));
+  BOOST_CHECK_EQUAL("2", CPP_STRINGIFY(CPP_NARGS(a, b)));
+  BOOST_CHECK_EQUAL("12", CPP_STRINGIFY(CPP_NARGS(a, b, c, d, e, f, g, h, i, j, k, l)));
 }
 
-TEST(Preprocessor_NARGS, Concat)
+BOOST_AUTO_TEST_CASE(Preprocessor_NARGS_Concat)
 {
-  EXPECT_EQ("x0x", CPP_STRINGIFY(CPP_CONCAT(x,CPP_NARGS(),x)));
-  EXPECT_EQ("X1XX", CPP_STRINGIFY(CPP_CONCAT(X,CPP_NARGS(a),XX)));
-  EXPECT_EQ("2AA", CPP_STRINGIFY(CPP_CONCAT(CPP_NARGS(a, b),AA)));
+  BOOST_CHECK_EQUAL("x0x", CPP_STRINGIFY(CPP_CONCAT(x,CPP_NARGS(),x)));
+  BOOST_CHECK_EQUAL("X1XX", CPP_STRINGIFY(CPP_CONCAT(X,CPP_NARGS(a),XX)));
+  BOOST_CHECK_EQUAL("2AA", CPP_STRINGIFY(CPP_CONCAT(CPP_NARGS(a, b),AA)));
 }
 
 // CPP_VFUNC
@@ -46,68 +48,70 @@ static int sum1(int x) { return x; }
 static int sum2(int x, int y) { return x + y; }
 static int sum3(int x, int y, int z) { return x + y + z; }
 
-TEST(Preprocessor_VFUNC, MacroFunction)
+BOOST_AUTO_TEST_CASE(Preprocessor_VFUNC_MacroFunction)
 {
 #define SUM(...) CPP_VFUNC(SUM, __VA_ARGS__)
-  EXPECT_EQ(6, SUM(1,2,3));
+  BOOST_CHECK_EQUAL(6, SUM(1,2,3));
 
   int x = 3;
-  EXPECT_EQ(6, SUM(1,2,x));
-  EXPECT_EQ(6, SUM(x,2,1));
+  BOOST_CHECK_EQUAL(6, SUM(1,2,x));
+  BOOST_CHECK_EQUAL(6, SUM(x,2,1));
 
-  //EXPECT_EQ(SUM(), 0);
+  //BOOST_CHECK_EQUAL(SUM(), 0);
 #undef SUM
 }
 
-TEST(Preprocessor_VFUNC, CFunction)
+BOOST_AUTO_TEST_CASE(Preprocessor_VFUNC_CFunction)
 {
 #define SUM(...) CPP_VFUNC(sum, __VA_ARGS__)
-  EXPECT_EQ(6, SUM(1,2,3));
+  BOOST_CHECK_EQUAL(6, SUM(1,2,3));
 
   int x = 3;
-  EXPECT_EQ(6, SUM(1,2,x));
-  EXPECT_EQ(6, SUM(x,2,1));
+  BOOST_CHECK_EQUAL(6, SUM(1,2,x));
+  BOOST_CHECK_EQUAL(6, SUM(x,2,1));
 
-  EXPECT_EQ(1, SUM(1));
-  //EXPECT_EQ(SUM(), 0);
+  BOOST_CHECK_EQUAL(1, SUM(1));
+  //BOOST_CHECK_EQUAL(SUM(), 0);
 #undef SUM
 }
 
 // CPP_CONCAT
 
-TEST(Preprocessor_CONCAT, Concat)
+BOOST_AUTO_TEST_CASE(Preprocessor_CONCAT_Concat)
 {
 #define TEST_MACRO 42
   int xXx = 42;
 
-  EXPECT_EQ(42, CPP_CONCAT(x,X,x));
-  EXPECT_EQ(42, CPP_CONCAT(CPP_CONCAT(TEST,_),MACRO));
-  EXPECT_EQ("xXx", CPP_STRINGIFY(CPP_CONCAT(CPP_CONCAT(x,X),x)));
-  EXPECT_EQ("xXx", CPP_STRINGIFY(CPP_CONCAT(x,X,x)));
+  BOOST_CHECK_EQUAL(42, CPP_CONCAT(x,X,x));
+  BOOST_CHECK_EQUAL(42, CPP_CONCAT(CPP_CONCAT(TEST,_),MACRO));
+  BOOST_CHECK_EQUAL("xXx", CPP_STRINGIFY(CPP_CONCAT(CPP_CONCAT(x,X),x)));
+  BOOST_CHECK_EQUAL("xXx", CPP_STRINGIFY(CPP_CONCAT(x,X,x)));
 
 #undef TEST_MACRO
 }
 
 // CPP_STRINGIFY
 
-TEST(Preprocessor_STRINGIFY, Concat)
+BOOST_AUTO_TEST_CASE(Preprocessor_STRINGIFY_Concat)
 {
-  EXPECT_EQ("xXx", CPP_STRINGIFY(xXx));
-  EXPECT_EQ("1+1", CPP_STRINGIFY(1+1));
-  EXPECT_EQ("&1+1~~", CPP_STRINGIFY(&1+1~~));
-  EXPECT_EQ("(1,1)", CPP_STRINGIFY((1,1)));
-  EXPECT_EQ("(std::map<int,int>)", CPP_STRINGIFY((std::map<int,int>)));
+  BOOST_CHECK_EQUAL("xXx", CPP_STRINGIFY(xXx));
+  BOOST_CHECK_EQUAL("1+1", CPP_STRINGIFY(1+1));
+  BOOST_CHECK_EQUAL("&1+1~~", CPP_STRINGIFY(&1+1~~));
+  BOOST_CHECK_EQUAL("(1,1)", CPP_STRINGIFY((1,1)));
+  BOOST_CHECK_EQUAL("(std::map<int,int>)", CPP_STRINGIFY((std::map<int,int>)));
 }
 
 // CPP_MACRO_BEGIN/END
 
-TEST(Preprocessor_MACRO_BEGIN_END, SetVariable)
+BOOST_AUTO_TEST_CASE(Preprocessor_MACRO_BEGIN_END_SetVariable)
 {
 #define TEST_MACRO(x) CPP_MACRO_BEGIN int i = 42; x = i; CPP_MACRO_END
 
   int x;
   TEST_MACRO(x);
-  EXPECT_EQ(42, x);
+  BOOST_CHECK_EQUAL(42, x);
 
 #undef TEST_MACRO
 }
+
+BOOST_AUTO_TEST_SUITE_END()

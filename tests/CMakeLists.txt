@@ -1,6 +1,7 @@
-# GTest
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
+# Boost Test
+find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+add_definitions(-DBOOST_TEST_DYN_LINK)
 
 # Sources
 include_directories(../include)
@@ -8,10 +9,14 @@ file(GLOB_RECURSE cpp_utils_tests_SOURCES "*.cpp")
 
 # Target
 add_executable(test-cpp-utils EXCLUDE_FROM_ALL ${cpp_utils_tests_SOURCES})
-target_link_libraries(test-cpp-utils ${GTEST_BOTH_LIBRARIES} pthread)
+target_link_libraries(test-cpp-utils ${Boost_LIBRARIES})
 
 # make check
-add_test(NAME test-cpp-utils COMMAND test-cpp-utils)
+add_custom_command(TARGET test-cpp-utils
+                   POST_BUILD
+                   COMMAND test-cpp-utils -i -s --detect_fp_exceptions=y -l message
+                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                   COMMENT "Running test-cpp-utils ..." VERBATIM)
 add_dependencies(check test-cpp-utils)
 
 
