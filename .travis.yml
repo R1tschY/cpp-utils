@@ -17,9 +17,8 @@ addons:
             - libboost-test-dev
 
 script:
-		- if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
     - mkdir build
     - cd build
     - cmake ..
     - make check
-    - ctest
