@@ -20,8 +20,11 @@
  * THE SOFTWARE.
  */
 
-#ifndef BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_MEMORY_MAYBE_NULL_H_
-#define BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_MEMORY_MAYBE_NULL_H_
+#ifndef CPP_UTILS_MEMORY_MAYBE_NULL_H_
+#define CPP_UTILS_MEMORY_MAYBE_NULL_H_
+
+template<typename T>
+class maybe_null;
 
 #include <utility>
 
@@ -93,7 +96,7 @@ public:
   auto operator->() cpp_attribute_returns_nonnull { cpp_assert(was_checked_); return &(*t_); }
   auto operator->() const cpp_attribute_returns_nonnull { cpp_assert(was_checked_); return &(*t_); }
 
-  explicit auto operator bool()
+  explicit operator bool()
   {
     was_checked_ = true;
     return t_ != nullptr;
@@ -109,4 +112,4 @@ private:
 
 } // namespace cpp
 
-#endif /* BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_MEMORY_MAYBE_NULL_H_ */
+#endif /* CPP_UTILS_MEMORY_MAYBE_NULL_H_ */

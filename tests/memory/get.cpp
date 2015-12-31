@@ -1,6 +1,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <memory>
+
 #include <cpp-utils/memory/get.h>
 
 BOOST_AUTO_TEST_SUITE(Memory_Get_Tests)
