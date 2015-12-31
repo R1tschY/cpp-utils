@@ -20,9 +20,13 @@
  * THE SOFTWARE.
  */
 
-#ifndef BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_ASSERT_H_
-#define BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_ASSERT_H_
+#ifndef CPP_UTILS_ASSERT_H_
+#define CPP_UTILS_ASSERT_H_
 
+#include <cstdio>
+#include <cstdlib>
+#include <exception>
+#include <sstream>
 #include "preprocessor.h"
 
 namespace cpp {
@@ -30,22 +34,54 @@ namespace cpp {
 #ifndef NDEBUG
 # define cpp_assert(expr) (expr) \
   ? CPP_NOOP \
-  : CPP_ASSERT_FAIL(CPP_STRINGIFY(expr), __PRETTY_FUNCTION__, __LINE__, __FILE__)
+  : CPP_ASSERT_FAIL(CPP_STRINGIFY(expr), __PRETTY_FUNCTION__, __FILE__, __LINE__)
 #else
 # define cpp_assert(expr) CPP_NOOP
 #endif
 
-void assert_fail_abort(const char* expr, const char* func, int line, const char* file);
+
+class assert_failure : public std::logic_error
+{
+public:
+  assert_failure(const char* expr, const char* func, const char* file, int line)
+  : std::logic_error(build_message(expr, func, file, line))
+  { }
+
+private:
+  static std::string build_message(const char* expr, const char* func, const char* file, int line)
+  {
+    std::stringstream message;
+    message << "Assertion failed (" << expr << ") failed at " << func << " (" << file << ':' << line << ")\n";
+    return message.str();
+  }
+};
+
+void assert_fail_abort(const char* expr, const char* func, int line, const char* file) noexcept __attribute__((noreturn));
 void assert_fail_throw(const char* expr, const char* func, int line, const char* file);
 
-#ifdef CPP_ASSERT_ABORT
-# define CPP_ASSERT_FAIL ::cpp::assert_fail_abort
-#elif defined(CPP_ASSERT_THROW)
-# define CPP_ASSERT_FAIL ::cpp::assert_fail_throw
-#else
-# define CPP_ASSERT_FAIL ::cpp::assert_fail_abort
+inline __attribute__((noreturn))
+void assert_fail_inline_abort(const char* expr, const char* func, const char* file, int line) noexcept
+{
+  std::printf("Assertion failed (%s) failed at %s (%s:%d)\n", expr, func, file, line);
+  std::terminate();
+}
+
+inline
+void assert_fail_inline_throw(const char* expr, const char* func, const char* file, int line)
+{
+  throw assert_failure(expr, func, file, line);
+}
+
+#define CPP_ASSERT_FAIL_ABORT ::cpp::assert_fail_abort
+#define CPP_ASSERT_FAIL_THROW ::cpp::assert_fail_throw
+#define CPP_ASSERT_FAIL_INLINE_ABORT ::cpp::assert_fail_inline_abort
+#define CPP_ASSERT_FAIL_INLINE_THROW ::cpp::assert_fail_inline_throw
+
+/// defaults CPP_ASSERT_FAIL to CPP_ASSERT_FAIL_INLINE_ABORT
+#ifndef CPP_ASSERT_FAIL
+# define CPP_ASSERT_FAIL CPP_ASSERT_FAIL_INLINE_ABORT
 #endif
 
 } // namespace cpp
 
-#endif /* BLOCKS_R1TSCHY_CPP_UTILS_INCLUDE_CPP_UTILS_ASSERT_H_ */
+#endif /* CPP_UTILS_ASSERT_H_ */
