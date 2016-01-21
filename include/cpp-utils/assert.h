@@ -67,24 +67,24 @@ private:
   int line_;
 };
 
-void assert_fail_abort(const char* expr, const char* func, int line, const char* file) noexcept __attribute__((noreturn));
-void assert_fail_throw(const char* expr, const char* func, int line, const char* file);
-void assert_fail_handler(const char* expr, const char* func, int line, const char* file);
+void assert_fail_abort(const char* expr, const char* func, const char* file, int line) noexcept __attribute__((noreturn));
+void assert_fail_throw(const char* expr, const char* func, const char* file, int line);
+void assert_fail_handler(const char* expr, const char* func, const char* file, int line);
 
 using AssertHandler =
-  void (*)(const char* expr, const char* func, int line, const char* file);
+  void (*)(const char* expr, const char* func, const char* file, int line);
 
 AssertHandler set_assert_handler(AssertHandler handler);
 
 inline __attribute__((noreturn))
-void assert_fail_inline_abort(const char* expr, const char* func, int line, const char* file) noexcept
+void assert_fail_inline_abort(const char* expr, const char* func, const char* file, int line) noexcept
 {
   std::printf("Assertion failed (%s) failed at %s (%s:%d)\n", expr, func, file, line);
   std::terminate();
 }
 
 inline
-void assert_fail_inline_throw(const char* expr, const char* func, int line, const char* file)
+void assert_fail_inline_throw(const char* expr, const char* func, const char* file, int line)
 {
   throw assert_failure(expr, func, file, line);
 }
