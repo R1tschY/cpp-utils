@@ -21,6 +21,7 @@
  */
 
 #include "assert.h"
+#include <atomic>
 
 namespace cpp {
 
@@ -34,8 +35,23 @@ void assert_fail_throw(const char* expr, const char* func, int line, const char*
   assert_fail_inline_throw(expr, func, line, file);
 }
 
+static std::atomic<AssertHandler> assert_handler = nullptr;
+
+AssertHandler cpp::set_assert_handler(AssertHandler handler)
+{
+  return assert_handler.exchange(handler);
+}
+
+void assert_fail_handler(const char* expr, const char* func, int line,
+  const char* file)
+{
+  AssertHandler handler = assert_handler;
+  if (!handler)
+  {
+    handler = ::cpp::assert_fail_abort;
+  }
+
+  handler(expr, func, line, file);
+}
+
 } // namespace cpp
-
-
-
-

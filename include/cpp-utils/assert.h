@@ -44,8 +44,14 @@ class assert_failure : public std::logic_error
 {
 public:
   assert_failure(const char* expr, const char* func, const char* file, int line)
-  : std::logic_error(build_message(expr, func, file, line))
+  : std::logic_error(build_message(expr, func, file, line)),
+    expr_(expr), func_(func), file_(file), line_(line)
   { }
+
+  const char* expr() const noexcept { return expr_; }
+  const char* function() const noexcept { return func_; }
+  const char* file() const noexcept { return file_; }
+  int line() const noexcept { return line_; }
 
 private:
   static std::string build_message(const char* expr, const char* func, const char* file, int line)
@@ -54,20 +60,31 @@ private:
     message << "Assertion failed (" << expr << ") failed at " << func << " (" << file << ':' << line << ")\n";
     return message.str();
   }
+
+  const char* expr_;
+  const char* func_;
+  const char* file_;
+  int line_;
 };
 
 void assert_fail_abort(const char* expr, const char* func, int line, const char* file) noexcept __attribute__((noreturn));
 void assert_fail_throw(const char* expr, const char* func, int line, const char* file);
+void assert_fail_handler(const char* expr, const char* func, int line, const char* file);
+
+using AssertHandler =
+  void (*)(const char* expr, const char* func, int line, const char* file);
+
+AssertHandler set_assert_handler(AssertHandler handler);
 
 inline __attribute__((noreturn))
-void assert_fail_inline_abort(const char* expr, const char* func, const char* file, int line) noexcept
+void assert_fail_inline_abort(const char* expr, const char* func, int line, const char* file) noexcept
 {
   std::printf("Assertion failed (%s) failed at %s (%s:%d)\n", expr, func, file, line);
   std::terminate();
 }
 
 inline
-void assert_fail_inline_throw(const char* expr, const char* func, const char* file, int line)
+void assert_fail_inline_throw(const char* expr, const char* func, int line, const char* file)
 {
   throw assert_failure(expr, func, file, line);
 }
@@ -76,10 +93,12 @@ void assert_fail_inline_throw(const char* expr, const char* func, const char* fi
 #define CPP_ASSERT_FAIL_THROW ::cpp::assert_fail_throw
 #define CPP_ASSERT_FAIL_INLINE_ABORT ::cpp::assert_fail_inline_abort
 #define CPP_ASSERT_FAIL_INLINE_THROW ::cpp::assert_fail_inline_throw
+#define CPP_ASSERT_FAIL_HANDLER ::cpp::assert_fail_handler
 
 /// defaults CPP_ASSERT_FAIL to CPP_ASSERT_FAIL_INLINE_ABORT
 #ifndef CPP_ASSERT_FAIL
 # define CPP_ASSERT_FAIL CPP_ASSERT_FAIL_INLINE_ABORT
+
 #endif
 
 } // namespace cpp
