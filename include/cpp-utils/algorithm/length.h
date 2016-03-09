@@ -24,6 +24,7 @@
 #define LIBS_CPP_UTILS_LENGTH_H_
 
 #include <cstddef>
+#include <type_traits>
 
 namespace cpp {
 
@@ -33,7 +34,7 @@ std::size_t length(const T(&) [N]) {
   return N;
 }
 
-template <typename Container, typename SizeType = decltype(t.size())>
+template <typename Container, typename SizeType = decltype(std::declval<Container>().size())>
 constexpr inline
 SizeType length(const Container& t) {
   return t.size();
