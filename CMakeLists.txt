@@ -1,17 +1,15 @@
-cmake_minimum_required(VERSION 2.8.7)
-project(cpp-utils)
+cmake_minimum_required(VERSION 3.0)
+cmake_policy(VERSION 3.2)
+project(cpp-utils CXX)
 
-# C++14
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1y")
-
-# Warnings
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wcast-qual -Wconversion -Wold-style-cast -Wno-unused-parameter")
-
-# Output directory
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+add_library(cpp-utils INTERFACE)
+target_include_directories(cpp-utils INTERFACE 
+	"${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
 
 # Testing
-add_custom_target(check)
-add_subdirectory(tests)
+if (NOT CPP_UTILS_NO_TESTS)
+	add_custom_target(check)
+	add_subdirectory(tests)
+endif()
 

@@ -3,14 +3,19 @@ find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 add_definitions(-DBOOST_TEST_DYN_LINK)
 
+# C++14
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1y")
+
+# Warnings
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wshadow -Wnon-virtual-dtor -Wcast-align -Wunused -Woverloaded-virtual -Wcast-qual -Wconversion -Wold-style-cast -Wno-unused-parameter")
+
 # Sources
-include_directories(../include)
 file(GLOB_RECURSE cpp_utils_tests_SOURCES "*.cpp")
 
 # Target
 add_definitions(-DCPP_ASSERT_FAIL=CPP_ASSERT_FAIL_INLINE_THROW)
 add_executable(test-cpp-utils EXCLUDE_FROM_ALL ${cpp_utils_tests_SOURCES})
-target_link_libraries(test-cpp-utils ${Boost_LIBRARIES})
+target_link_libraries(test-cpp-utils cpp-utils ${Boost_LIBRARIES})
 
 # make check
 add_custom_command(TARGET test-cpp-utils
