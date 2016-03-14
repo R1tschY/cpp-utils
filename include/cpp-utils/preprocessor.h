@@ -149,6 +149,11 @@
 /// `CPP_WSTRINGIFY(123)` will be `L"123"`
 #define CPP_WSTRINGIFY(x) CPP_CONCAT(L,_CPP_STRINGIFY(x))
 
+/// \brief convert normal string literal to a wide string literal
+///
+/// `CPP_TO_WIDESTRING("123")` will be `L"123"`
+#define CPP_TO_WIDESTRING(x) CPP_CONCAT(L,x)
+
 ////////////////////////////////////////////////////////////////////////////////
 // Macro utils
 
