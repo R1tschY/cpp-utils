@@ -1,10 +1,19 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 2.8)
 cmake_policy(VERSION 3.2)
-project(cpp-utils CXX)
+project(cpp-utils VERSION 0.1 LANGUAGES CXX)
 
-add_library(cpp-utils INTERFACE)
+if(CMAKE_MAJOR_VERSION GREATER 3)
+  add_library(cpp-utils-headeronly INTERFACE)
+  target_include_directories(cpp-utils-headeronly INTERFACE 
+  	"${CMAKE_CURRENT_SOURCE_DIR}/include"
+  )
+endif()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1y")
+
+add_library(cpp-utils STATIC include/cpp-utils/assert.cpp)
 target_include_directories(cpp-utils INTERFACE 
-	"${CMAKE_CURRENT_SOURCE_DIR}/include"
+  "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
 # Testing
