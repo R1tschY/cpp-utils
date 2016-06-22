@@ -13,7 +13,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wshadow -Wnon-vir
 file(GLOB_RECURSE cpp_utils_tests_SOURCES "*.cpp")
 
 # Target
-add_definitions(-DCPP_ASSERT_FAIL=CPP_ASSERT_FAIL_INLINE_THROW)
+add_definitions(-DCPP_ASSERT_FAIL=CPP_ASSERT_FAIL_THROW)
 add_executable(test-cpp-utils EXCLUDE_FROM_ALL ${cpp_utils_tests_SOURCES})
 target_link_libraries(test-cpp-utils cpp-utils ${Boost_LIBRARIES})
 

@@ -25,7 +25,7 @@
 
 namespace cpp {
 
-void assert_fail_abort(const char* expr, const char* func, const char* file, int line) noexcept __attribute__((noreturn))
+void assert_fail_abort(const char* expr, const char* func, const char* file, int line) noexcept
 {
   assert_fail_inline_abort(expr, func, file, line);
 }
@@ -35,9 +35,9 @@ void assert_fail_throw(const char* expr, const char* func, const char* file, int
   assert_fail_inline_throw(expr, func, file, line);
 }
 
-static std::atomic<AssertHandler> assert_handler = nullptr;
+static std::atomic<AssertHandler> assert_handler{::cpp::assert_fail_abort};
 
-AssertHandler cpp::set_assert_handler(AssertHandler handler)
+AssertHandler set_assert_handler(AssertHandler handler)
 {
   return assert_handler.exchange(handler);
 }
@@ -46,12 +46,10 @@ void assert_fail_handler(const char* expr, const char* func,
   const char* file, int line)
 {
   AssertHandler handler = assert_handler;
-  if (!handler)
+  if (handler)
   {
-    handler = ::cpp::assert_fail_abort;
+    handler(expr, func, file, line);
   }
-
-  handler(expr, func, file, line);
 }
 
 } // namespace cpp
