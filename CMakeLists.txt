@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 2.8)
 
 if(CMAKE_VERSION VERSION_GREATER 3.2)
   cmake_policy(VERSION 3.2)
+  project(cpp-utils VERSION 0.1 LANGUAGES CXX)
+else()
+  project(cpp-utils CXX)
 endif()
-
-project(cpp-utils VERSION 0.1 LANGUAGES CXX)
 
 if(CMAKE_VERSION VERSION_GREATER 3.0)
   add_library(cpp-utils-headeronly INTERFACE)
