@@ -29,7 +29,7 @@ class maybe_null;
 #include <utility>
 
 #include "../assert.h"
-#include "../detail/normalize.h"
+#include "../compiler/attributes.h"
 #include "not_null.h"
 
 namespace cpp {

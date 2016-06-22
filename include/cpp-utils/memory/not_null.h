@@ -30,7 +30,7 @@ class not_null;
 #include <utility>
 #include <iosfwd>
 #include "../assert.h"
-#include "../detail/normalize.h"
+#include "../compiler/attributes.h"
 #include "maybe_null.h"
 
 namespace cpp {
