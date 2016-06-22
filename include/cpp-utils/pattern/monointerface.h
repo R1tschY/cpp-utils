@@ -21,13 +21,13 @@
  */
 
 #include <memory>
-#include <cassert>
+#include "../assert.h"
 
 namespace cpp {
 
 /// Idea from http://accu.org/index.php/journals/2085
 template<typename AbstractClass, class Tag = void>
-class mono_interface final
+class mono_interface
 {
 public:
   explicit mono_interface(std::unique_ptr<AbstractClass> new_instance) 
@@ -37,7 +37,7 @@ public:
   
   mono_interface() 
   {
-    assert(instance_ != nullptr);
+    cpp_assert(instance_ != nullptr);
   }
   
   AbstractClass* operator->() {
@@ -77,8 +77,8 @@ public:
   }
   
   static void set(std::unique_ptr<AbstractClass> new_instance) {
-    assert(new_instance != nullptr);
-    assert(instance_ == nullptr);
+    cpp_assert(new_instance != nullptr);
+    cpp_assert(instance_ == nullptr);
       
     instance_ = std::move(new_instance);
   }

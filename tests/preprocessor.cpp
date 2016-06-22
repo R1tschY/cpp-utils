@@ -108,7 +108,8 @@ BOOST_AUTO_TEST_CASE(Preprocessor_MACRO_BEGIN_END_SetVariable)
 #define TEST_MACRO(x) CPP_MACRO_BEGIN int i = 42; x = i; CPP_MACRO_END
 
   int x;
-  TEST_MACRO(x);
+  if (1)
+	  TEST_MACRO(x);
   BOOST_CHECK_EQUAL(42, x);
 
 #undef TEST_MACRO
