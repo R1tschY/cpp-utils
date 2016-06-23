@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <numeric>
 #include <boost/test/unit_test.hpp>
 
 #include <cpp-utils/iterator_range.h>
