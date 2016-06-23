@@ -23,14 +23,12 @@
 #ifndef UTILS_META_CORE_H_
 #define UTILS_META_CORE_H_
 
+#include "void.h"
+
 namespace cpp {
 
 template<typename T>
 using type = typename T::type;
-
-/// from Walter E. Brown's talk "Modern Template Metaprogramming: A Compendium, Part II" at CppCon 2014
-template<typename ...>
-using void_t = void;
 
 } // namespace cpp
 

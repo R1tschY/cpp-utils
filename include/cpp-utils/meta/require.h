@@ -28,8 +28,8 @@ namespace cpp {
 #define REQUIRE(...) typename std::enable_if<__VA_ARGS__::value>::type
 #define REQUIRES(...) typename std::enable_if<__VA_ARGS__>::type
 
-#define FUNC_REQUIRE(...) typename std::enable_if<__VA_ARGS__::value>::type* = nullptr
-#define FUNC_REQUIRES(...) typename std::enable_if<__VA_ARGS__>::type* = nullptr
+#define FUNC_REQUIRE(...) typename std::enable_if<__VA_ARGS__::value, int>::type = 0
+#define FUNC_REQUIRES(...) typename std::enable_if<__VA_ARGS__, int>::type = 0
 
 }  // namespace cpp
 
