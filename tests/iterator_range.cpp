@@ -18,9 +18,15 @@ BOOST_AUTO_TEST_CASE(iterator_range_tests)
     BOOST_CHECK_EQUAL(10, std::accumulate(test.begin(), test.end(), 0));
   }
 
+  // STL algo (default parameter)
+  {
+    auto test = iterator_range<Iter>(data.begin(), data.end());
+    BOOST_CHECK_EQUAL(10, std::accumulate(test.begin(), test.end(), 0));
+  }
+
   // c++11 for
   {
-    auto test = iterator_range<Iter, Iter>(data.begin(), data.end());
+    auto test = iterator_range<Iter>(data.begin(), data.end());
 
     int result = 0;
     for (auto i : test)

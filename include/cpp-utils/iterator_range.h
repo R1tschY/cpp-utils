@@ -8,7 +8,7 @@ namespace cpp {
 /// \brief a range from two iterator
 ///
 /// \details use make_range to create a range
-template<typename T1, typename T2>
+template<typename T1, typename T2 = T1>
 class iterator_range
 {
 public:
