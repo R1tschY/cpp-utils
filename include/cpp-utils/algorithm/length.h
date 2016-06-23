@@ -28,16 +28,17 @@
 
 namespace cpp {
 
-template <typename T, std::size_t N>
-constexpr inline
-std::size_t length(const T(&) [N]) {
-  return N;
-}
-
+/* TODO
 template <typename Container>
 constexpr inline
 auto length(const Container& t) -> decltype(t.size()) {
   return t.size();
+}*/
+
+template <typename Container>
+constexpr inline
+auto length(const Container& t) -> decltype(std::distance(std::begin(t), std::end(t))) {
+  return std::distance(std::begin(t), std::end(t));
 }
 
 } // namespace cpp
