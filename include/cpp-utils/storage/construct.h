@@ -7,7 +7,7 @@
 #include <iterator>
 #include <new>
 
-#include "macros.h"
+#include "../meta/require.h"
 
 namespace cpp {
 
@@ -16,18 +16,18 @@ void construct(T* ptr, Args&&... args) {
   ::new(ptr) T(std::forward<Args>(args)...);
 }
 
-template<typename T, REQUIRES(std::is_trivially_destructible<T>)> inline
+template<typename T, FUNC_REQUIRE(std::is_trivially_destructible<T>::value)> inline
 void destruct(T*) { }
 
-template<typename T, REQUIRES(!std::is_trivially_destructible<T>)> inline
+template<typename T, FUNC_REQUIRE(!std::is_trivially_destructible<T>::value)> inline
 void destruct(T* ptr) {
   ptr->~T();
 }
 
-template<typename ForwardIterator, REQUIRES(std::is_trivially_destructible<typename std::iterator_traits<ForwardIterator>::value_type>)> inline
+template<typename ForwardIterator, FUNC_REQUIRE(std::is_trivially_destructible<typename std::iterator_traits<ForwardIterator>::value_type>)> inline
 void destruct(ForwardIterator, ForwardIterator) { }
 
-template<typename ForwardIterator, REQUIRES(!std::is_trivially_destructible<typename std::iterator_traits<ForwardIterator>::value_type>)>
+template<typename ForwardIterator, FUNC_REQUIRE(!std::is_trivially_destructible<typename std::iterator_traits<ForwardIterator>::value_type>)>
 void destruct(ForwardIterator first, ForwardIterator last) {
   for (; first != last; ++first) {
     destruct(std::addressof(*first));
