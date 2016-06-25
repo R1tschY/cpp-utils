@@ -73,7 +73,7 @@ void assign(ContainerLhs& lhs, const ContainerRhs& rhs)
 template<typename ContainerLhs, typename ContainerRhs, typename Func>
 void transform(const ContainerLhs& lhs, ContainerRhs& rhs, Func&& func)
 {
-  reserve(rhs, length(rhs) + length(lhs));
+  //reserve(rhs, length(rhs) + length(lhs));
   std::transform(std::begin(lhs), std::end(lhs),
     std::back_inserter(rhs), std::move(func));
 }
