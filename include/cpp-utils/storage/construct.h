@@ -16,10 +16,10 @@ void construct(T* ptr, Args&&... args) {
   ::new(ptr) T(std::forward<Args>(args)...);
 }
 
-template<typename T, FUNC_REQUIRE(std::is_trivially_destructible<T>::value)> inline
+template<typename T, FUNC_REQUIRES(std::is_trivially_destructible<T>::value)> inline
 void destruct(T*) { }
 
-template<typename T, FUNC_REQUIRE(!std::is_trivially_destructible<T>::value)> inline
+template<typename T, FUNC_REQUIRES(!std::is_trivially_destructible<T>::value)> inline
 void destruct(T* ptr) {
   ptr->~T();
 }
@@ -33,12 +33,6 @@ void destruct(ForwardIterator first, ForwardIterator last) {
     destruct(std::addressof(*first));
   }
 }
-
-template<typename T>
-void destruct(T* instance);
-
-template<typename ForwardIterator>
-void destruct(ForwardIterator begin, ForwardIterator end);
 
 } // namespace cpp
 
