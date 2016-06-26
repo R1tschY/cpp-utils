@@ -17,10 +17,25 @@ if(CMAKE_VERSION VERSION_GREATER 3.0)
   	"${CMAKE_CURRENT_SOURCE_DIR}/include"
   )
   
-  add_library(cpp-utils STATIC include/cpp-utils/assert.cpp)
-  target_include_directories(cpp-utils INTERFACE 
+  set(cpp_utils_SOURCES include/cpp-utils/assert.cpp)
+  
+  add_library(cpp-utils32 STATIC ${cpp_utils_SOURCES})
+  set_target_properties(cpp-utils32 PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
+  target_include_directories(cpp-utils32 INTERFACE 
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
   )
+  
+  if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    add_library(cpp-utils64 STATIC ${cpp_utils_SOURCES})
+    target_include_directories(cpp-utils64 INTERFACE 
+      "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    )
+  
+    add_library(cpp-utils ALIAS cpp-utils64)
+  else()
+    add_library(cpp-utils ALIAS cpp-utils32)
+  endif()
+  
 else()
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
   add_library(cpp-utils STATIC include/cpp-utils/assert.cpp)
