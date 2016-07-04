@@ -12,7 +12,7 @@ template<typename T1, typename T2 = T1>
 class iterator_range
 {
 public:
-  explicit iterator_range(T1 first, T2 last)
+  explicit iterator_range(T1 first, T2 last = T2())
     : begin_(std::move(first)), end_(std::move(last))
   { }
 
