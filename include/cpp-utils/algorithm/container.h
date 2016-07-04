@@ -94,7 +94,7 @@ bool equal(const Range1& r1, const Range2& r2)
 
 /// \brief std::for_each for ranges
 template<typename Range1, typename Func>
-void for_each(const Range1& r1, Func&& func)
+void for_each(Range1& r1, Func&& func)
 {
   std::for_each(std::begin(r1), std::end(r1), std::move(func));
 }
