@@ -12,19 +12,19 @@
 
 namespace cpp {
 
-template<typename T>
+template<typename T, typename CharT = char>
 class simple_registry_entry
 {
 public:
   using factory = std::unique_ptr<T>(*)();
 
   explicit simple_registry_entry(
-    const char* name, const char* description, const factory factory)
+    const CharT* name, const CharT* description, const factory factory)
     : name_(name), description_(description), factory_(factory)
   { }
 
   template<typename V>
-  static simple_registry_entry create(const char* name, const char* description)
+  static simple_registry_entry create(const CharT* name, const CharT* description)
   {
     return simple_registry_entry(name, description,
       []() -> std::unique_ptr<T> { return make_unique<V>(); });
@@ -32,12 +32,12 @@ public:
 
   std::unique_ptr<T> create() const { return factory_(); }
 
-  const char* name() const { return name_; }
-  const char* description() const { return description_; }
+  const CharT* name() const { return name_; }
+  const CharT* description() const { return description_; }
 
 private:
-  const char* name_;
-  const char* description_;
+  const CharT* name_;
+  const CharT* description_;
   const factory factory_;
 };
 
