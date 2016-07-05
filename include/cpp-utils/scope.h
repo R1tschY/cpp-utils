@@ -5,85 +5,121 @@
 #include <exception>
 
 #include "preprocessor.h"
+#include "bits/uncaught_exceptions.h"
 
 namespace cpp {
+
+/// \brief a scope guard
+/// \details from https://github.com/facebook/folly
+template<typename Func>
+class scope_guard
+{
+public:
+  explicit scope_guard(const Func& func) : func_(func) { }
+  explicit scope_guard(Func&& func) : func_(std::move(func)) { }
+
+  scope_guard(scope_guard&& other)
+  noexcept(std::is_nothrow_move_constructible<Func>::value)
+  : func_(std::move_if_noexcept(other.func_)), invoke_(other.invoke_)
+  {
+    other.invoke_ = false;
+  }
+
+  /// execute final action
+  ~scope_guard() noexcept { if (invoke_) func_(); }
+
+  // non-copyable
+  scope_guard(const scope_guard&) = delete;
+  scope_guard& operator=(const scope_guard&) = delete;
+
+private:
+  Func func_;
+  bool invoke_ = true;
+};
 
 namespace detail {
 
 /// \brief helper class for scope_exit
 ///
 /// from Andrei Alexandrescu's talk at CppCpn 2015 'Declarative Control Flow'
-enum class ScopeGuardOnExit { };
-
-enum class ScopeGuardOnFail { };
-enum class ScopeGuardOnSuccess { };
-
-/// \brief helper for scope_exit
-///
-/// from Andrei Alexandrescu's talk at CppCpn 2015 'Declarative Control Flow'
-template<typename Func> inline
-Guide::Final_act<Func> operator+(ScopeGuardOnExit, Func&& fn)
-{
-  return Guide::Final_act<Func>(std::forward<Func>(fn));
-}
-
-int uncaught_exceptions() { return std::uncaught_exception()?1:0; }
-// int uncaught_exceptions() { return std::uncaught_exceptions(); }
+enum class scope_guard_onexit { };
+enum class scope_guard_onfail { };
+enum class scope_guard_onsuccess { };
 
 /// \brief notify if a new exception is thrown in this scope
 ///
-/// from Andrei Alexandrescu's talk at CppCpn 2015 'Declarative Control Flow'
-class UncaughtExceptionCounter
+/// \details
+/// from Andrei Alexandrescu's talk at CppCon 2015 'Declarative Control Flow'
+/// and https://github.com/panaseleus/stack_unwinding
+class unwinding_indicator
 {
-  int getUncaughtExceptionCount() const noexcept { return exceptionCount_; }
-  int exceptionCount_;
 public:
-  UncaughtExceptionCounter()
-    : exceptionCount_(uncaught_exceptions())
+  unwinding_indicator()
+    : exception_count_(uncaught_exceptions())
   { }
 
-  bool newUncaughtException() const noexcept
+  bool unwinding() const noexcept
   {
-    return uncaught_exceptions() > exceptionCount_;
+    return uncaught_exceptions() > exception_count_;
   }
+
+private:
+  int exception_count_;
 };
 
 /// \brief execute function if (no) exception in scope is thrown
 ///
-/// from Andrei Alexandrescu's talk at CppCpn 2015 'Declarative Control Flow'
+/// from Andrei Alexandrescu's talk at CppCon 2015 'Declarative Control Flow'
 template<typename FunctionType, bool executeOnException>
-class ScopeGuardForNewException
+class scope_guard_ex
 {
-  FunctionType function_;
-  UncaughtExceptionCounter ec_;
 public:
-  explicit ScopeGuardForNewException(const FunctionType& fn)
-  : function_(fn)
+  explicit scope_guard_ex(const FunctionType& fn)
+  : func_(fn)
   { }
 
-  explicit ScopeGuardForNewException(FunctionType&& fn)
-  : function_(std::move(fn))
+  explicit scope_guard_ex(FunctionType&& fn)
+  : func_(std::move(fn))
   { }
 
-  ~ScopeGuardForNewException() noexcept(executeOnException)
+  ~scope_guard_ex() noexcept(executeOnException)
   {
-    if (executeOnException == ec_.newUncaughtException())
+    if (ind_.unwinding() == executeOnException)
     {
-      function_();
+      func_();
     }
   }
+
+private:
+  FunctionType func_;
+  unwinding_indicator ind_;
 };
 
+/// \brief helper for scope(exit)
+///
+/// from Andrei Alexandrescu's talk at CppCpn 2015 'Declarative Control Flow'
 template<typename Func> inline
-ScopeGuardForNewException<Func, true> operator+(ScopeGuardOnFail, Func&& fn)
+scope_guard<Func> operator+(scope_guard_onexit, Func&& fn)
 {
-  return { std::forward<Func>(fn) };
+  return scope_guard<Func>(std::forward<Func>(fn));
 }
 
+/// \brief helper for scope(fail)
+///
+/// from Andrei Alexandrescu's talk at CppCpn 2015 'Declarative Control Flow'
 template<typename Func> inline
-ScopeGuardForNewException<Func, false> operator+(ScopeGuardOnSuccess, Func&& fn)
+scope_guard_ex<Func, true> operator+(scope_guard_onfail, Func&& fn)
 {
-  return { std::forward<Func>(fn) };
+  return scope_guard_ex<Func, true>(std::forward<Func>(fn));
+}
+
+/// \brief helper for scope(success)
+///
+/// from Andrei Alexandrescu's talk at CppCpn 2015 'Declarative Control Flow'
+template<typename Func> inline
+scope_guard_ex<Func, false> operator+(scope_guard_onsuccess, Func&& fn)
+{
+  return scope_guard_ex<Func, false>(std::forward<Func>(fn));
 }
 
 }  // namespace detail
@@ -94,23 +130,26 @@ ScopeGuardForNewException<Func, false> operator+(ScopeGuardOnSuccess, Func&& fn)
 /// void f()
 /// {
 ///   void* p = malloc(42);
-///   scope_exit { if (p) free(p); }
+///   scope(exit) { if (p) free(p); }
 ///   // ...
 /// }
 /// \endcode
 ///
 /// from Andrei Alexandrescu's talk at CppCon 2015 'Declarative Control Flow'
+#define _scope_(x) x
+#define scope(x) _scope_(scope_##x)
+
 #define scope_exit \
   auto CPP_UNIQUE_NAME(SCOPE_EXIT_STATE) \
-  = ::cpp::detail::ScopeGuardOnExit() + [&]()
+  = ::cpp::detail::scope_guard_onexit() + [&]()
 
 #define scope_fail \
   auto CPP_UNIQUE_NAME(SCOPE_FAIL_STATE) \
-  = ::cpp::detail::ScopeGuardOnFail() + [&]() noexcept
+  = ::cpp::detail::scope_guard_onfail() + [&]() noexcept
 
 #define scope_success \
   auto CPP_UNIQUE_NAME(SCOPE_SUCCESS_STATE) \
-  = ::cpp::detail::ScopeGuardOnSuccess() + [&]()
+  = ::cpp::detail::scope_guard_onsuccess() + [&]()
 
 }  // namespace cpp
 
