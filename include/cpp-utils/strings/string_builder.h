@@ -320,6 +320,50 @@ Result concatenate(const Args&...args)
   return result;
 }
 
+template<typename Result, typename...Args>
+void concatenate_to(Result& result, const Args&...args)
+{
+  std::size_t len = arguments::accumulate(
+    [](const auto& arg){ return string_length(arg); },
+    0,
+    args...
+  );
+
+  // reserve size
+  result.reserve(result.size() + len);
+
+  // build string
+  arguments::for_each(
+    [&result](const auto& arg){
+      string_append(result, arg);
+    },
+    args...
+  );
+}
+
+template<typename Result, typename...Args>
+Result concatenate_to(Result&& result, const Args&...args)
+{
+  std::size_t len = arguments::accumulate(
+    [](const auto& arg){ return string_length(arg); },
+    0,
+    args...
+  );
+
+  // reserve size
+  result.reserve(result.size() + len);
+
+  // build string
+  arguments::for_each(
+    [&result](const auto& arg){
+      string_append(result, arg);
+    },
+    args...
+  );
+
+  return std::move(result);
+}
+
 } // namespace cpp
 
 #endif /* CPP_UTILS_STRINGS_STRING_BUILDER_H_ */

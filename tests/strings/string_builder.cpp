@@ -32,11 +32,16 @@ BOOST_AUTO_TEST_CASE(common_use_cases)
     BOOST_CHECK_EQUAL(s, "abcdefghij");
   }
 
-//  {
-//    std::string s;
-//    cpp::concatenate(s)("a"s, "b"s, "c"s);
-//    BOOST_CHECK_EQUAL(s, "abc");
-//  }
+  {
+    std::string s;
+    cpp::concatenate_to(s, "a"s, "b"s, "c"s);
+    BOOST_CHECK_EQUAL(s, "abc");
+  }
+
+  {
+    std::string s = cpp::concatenate_to(std::string(), "a"s, "b"s, "c"s);
+    BOOST_CHECK_EQUAL(s, "abc");
+  }
 
 //  {
 //    std::string s = cpp::string_builder<std::string>() << "a"s + "b"s + "c"s;
