@@ -9,11 +9,11 @@ namespace cpp {
 
 #define _string_literal_II(s) s
 #define _string_literal_I(s) _string_literal_II(s)
-#define string_literal(s) (::cpp::basic_string_view<char>(_string_literal_I(s), sizeof(_string_literal_I(s))-1))
+#define string_literal(s) (::cpp::basic_string_view<char>(_string_literal_I(s)))
 
 #define _wstring_literal_II(s) L##s
 #define _wstring_literal_I(s) _wstring_literal_II(s)
-#define wstring_literal(s) (::cpp::basic_string_view<wchar_t>(_wstring_literal_I(s), sizeof(_wstring_literal_I(s))/sizeof(wchar_t)-1))
+#define wstring_literal(s) (::cpp::basic_string_view<wchar_t>(_wstring_literal_I(s)))
 
 
 // see also: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4121.pdf
