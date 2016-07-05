@@ -39,19 +39,29 @@ namespace cpp {
 inline std::string demangle(const char* mangled_name)
 {
   int status;
-  malloc_ptr<char> result = abi::__cxa_demangle(mangled_name, 0, 0, &status);
-  return (status == 0 && result) ? std::string(result) : std::string();
+  malloc_ptr<char> result(abi::__cxa_demangle(mangled_name, 0, 0, &status));
+  return (status == 0 && result) ? std::string(result.get()) : std::string();
+}
+
+inline void demangle(const char* mangled_name, std::string& out)
+{
+  int status;
+  malloc_ptr<char> result(abi::__cxa_demangle(mangled_name, 0, 0, &status));
+
+  out.clear();
+  if (status == 0 && result)
+    out.assign(result.get());
 }
 
 inline std::string demangle_or_throw(const char* mangled_name)
 {
   int status;
-  malloc_ptr<char> result = abi::__cxa_demangle(mangled_name, 0, 0, &status);
+  malloc_ptr<char> result(abi::__cxa_demangle(mangled_name, 0, 0, &status));
 
   switch (status)
   {
   case 0:
-    return std::string(result);
+    return std::string(result.get());
 
   case -1:
     throw std::bad_alloc();
@@ -60,10 +70,10 @@ inline std::string demangle_or_throw(const char* mangled_name)
     throw std::invalid_argument("mangled_name is not a valid name under the C++ ABI mangling rules");
 
   case -3:
-    throw std::invalid_argument();
+    throw std::invalid_argument("to abi::__cxa_demangle");
 
   default:
-    throw std::runtime_error();
+    throw std::runtime_error("unknown error of abi::__cxa_demangle");
   }
 }
 
