@@ -198,7 +198,7 @@
 /// \brief create a unique identifier name
 ///
 /// the generated name with \p prefix will be unique in this source file
-#define CPP_UNIQUE_NAME(prefix) CPP_CONCAT(prefix, __COUNTER__)
+#define CPP_UNIQUE_NAME(prefix) _CPP_CONCAT2(prefix, __COUNTER__)
 
 #ifdef __DOXYGEN__
 /// \brief Start of a C-API definition
