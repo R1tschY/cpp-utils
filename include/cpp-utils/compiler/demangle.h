@@ -32,7 +32,7 @@
 #include <memory>
 #include <string>
 
-#include "../memory/malloc_ptr.h"
+#include "../memory/malloc.h"
 
 namespace cpp {
 
