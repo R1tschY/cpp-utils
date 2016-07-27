@@ -8,7 +8,7 @@
 #include <string>
 
 #include "../iterator_range.h"
-#include "../make_unique.h"
+#include "../memory/make_unique.h"
 
 namespace cpp {
 
