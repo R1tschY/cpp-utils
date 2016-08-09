@@ -8,7 +8,7 @@
 #include <iterator>
 #include <utility>
 
-#include "../assert.h"
+#include "assert.h"
 
 namespace cpp {
 
