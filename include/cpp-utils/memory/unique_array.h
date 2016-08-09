@@ -42,6 +42,10 @@ public:
   using const_iterator = const_pointer;
   using deleter_type = Deleter;
 
+  explicit unique_array()
+  : data_()
+  { }
+
   explicit unique_array(pointer ptr, std::size_t size)
   : data_(internal(ptr, size), Deleter())
   { }
