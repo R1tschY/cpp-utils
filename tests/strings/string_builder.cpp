@@ -17,6 +17,7 @@ BOOST_AUTO_TEST_CASE(common_use_cases)
     BOOST_CHECK_EQUAL(s, "abc");
   }
 
+#ifndef __clang__
   {
     std::string s = cpp::concatenate<std::string>("a"sv, "b"sv, "c"s);
     BOOST_CHECK_EQUAL(s, "abc");
@@ -31,6 +32,7 @@ BOOST_AUTO_TEST_CASE(common_use_cases)
     std::string s = cpp::concatenate<std::string>("abc"sv, 'd', "efg", "hij"s);
     BOOST_CHECK_EQUAL(s, "abcdefghij");
   }
+#endif
 
   {
     std::string s;

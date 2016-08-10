@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(MonoInterface_All) {
   BOOST_CHECK_EQUAL(42, (*mono).test());
   BOOST_CHECK_EQUAL(42, (&mono)->test());
   
-  MonoI mono2();
+  MonoI mono2;
   BOOST_CHECK_EQUAL(42, mono->test());
   
   BOOST_CHECK_EQUAL(42, MonoI::get().test());
