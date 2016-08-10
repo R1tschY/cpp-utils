@@ -168,7 +168,7 @@ struct concatenable<T, void_t<decltype(std::begin(std::declval<T>()))>>
 
     static std::size_t size(const type& x)
     {
-      return std::distance(std::begin(x), std::end(x));
+      return std::size_t(std::distance(std::begin(x), std::end(x)));
     }
 
     template<typename Result>

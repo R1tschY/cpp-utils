@@ -53,9 +53,9 @@
 #include <exception>
 
 namespace cpp {
-inline int uncaught_exceptions()
+inline unsigned uncaught_exceptions()
 {
-  return std::uncaught_exceptions();
+  return unsigned(std::uncaught_exceptions());
 }
 } // namespace cpp
 
@@ -67,7 +67,7 @@ inline int uncaught_exceptions()
 
 namespace cpp {
 
-inline int uncaught_exceptions()
+inline unsigned uncaught_exceptions()
 {
   return access_field<unsigned>(abi::__cxa_get_globals(), sizeof(void*));
 }

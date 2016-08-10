@@ -9,13 +9,13 @@
 /// missing printer for nullptr
 /// from https://cplusplus.github.io/LWG/lwg-active.html#2221
 template<class C, class T>
-std::basic_ostream<C, T>& operator<<(std::basic_ostream<C, T>& os, nullptr_t)
+std::basic_ostream<C, T>& operator<<(std::basic_ostream<C, T>& os, std::nullptr_t)
 {
   return os << static_cast<void*>(nullptr);
 }
 
 template<class C>
-std::basic_ostream<C>& operator<<(std::basic_ostream<C>& os, nullptr_t)
+std::basic_ostream<C>& operator<<(std::basic_ostream<C>& os, std::nullptr_t)
 {
   return os << static_cast<void*>(nullptr);
 }

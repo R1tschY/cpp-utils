@@ -64,7 +64,7 @@ public:
   }
 
 private:
-  int exception_count_;
+  unsigned exception_count_;
 };
 
 /// \brief execute function if (no) exception in scope is thrown

@@ -43,10 +43,10 @@ BOOST_AUTO_TEST_CASE(Preprocessor_NARGS_Concat)
 #define SUM2(x,y) ((x) + (y))
 #define SUM3(x,y,z) ((x) + (y) + (z))
 
-static int sum0() { return 0; }
-static int sum1(int x) { return x; }
-static int sum2(int x, int y) { return x + y; }
-static int sum3(int x, int y, int z) { return x + y + z; }
+int sum0() { return 0; }
+int sum1(int x) { return x; }
+int sum2(int x, int y) { return x + y; }
+int sum3(int x, int y, int z) { return x + y + z; }
 
 BOOST_AUTO_TEST_CASE(Preprocessor_VFUNC_MacroFunction)
 {

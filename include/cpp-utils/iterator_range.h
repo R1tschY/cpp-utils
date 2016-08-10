@@ -13,7 +13,7 @@
 namespace cpp {
 
 struct unsafe_tag { };
-constexpr static unsafe_tag unsafe;
+constexpr static unsafe_tag unsafe{};
 
 /// \brief a range from two iterator
 ///
