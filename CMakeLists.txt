@@ -9,7 +9,7 @@ endif()
 
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1y")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1z")
 
 if(CMAKE_VERSION VERSION_GREATER 3.0)
   add_library(cpp-utils-headeronly INTERFACE)
@@ -19,14 +19,14 @@ if(CMAKE_VERSION VERSION_GREATER 3.0)
   
   set(cpp_utils_SOURCES include/cpp-utils/assert.cpp)
   
-  add_library(cpp-utils32 STATIC ${cpp_utils_SOURCES})
+  add_library(cpp-utils32 STATIC EXCLUDE_FROM_ALL ${cpp_utils_SOURCES})
   set_target_properties(cpp-utils32 PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
   target_include_directories(cpp-utils32 INTERFACE 
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
   )
   
   if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-    add_library(cpp-utils64 STATIC ${cpp_utils_SOURCES})
+    add_library(cpp-utils64 STATIC EXCLUDE_FROM_ALL ${cpp_utils_SOURCES})
     target_include_directories(cpp-utils64 INTERFACE 
       "${CMAKE_CURRENT_SOURCE_DIR}/include"
     )
