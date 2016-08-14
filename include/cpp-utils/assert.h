@@ -95,9 +95,9 @@ void assert_fail_inline_throw(const char* expr, const char* func, const char* fi
 #define CPP_ASSERT_FAIL_INLINE_THROW ::cpp::assert_fail_inline_throw
 #define CPP_ASSERT_FAIL_HANDLER ::cpp::assert_fail_handler
 
-/// defaults CPP_ASSERT_FAIL to CPP_ASSERT_FAIL_INLINE_ABORT
+/// defaults CPP_ASSERT_FAIL to CPP_ASSERT_FAIL_INLINE_THROW
 #ifndef CPP_ASSERT_FAIL
-# define CPP_ASSERT_FAIL CPP_ASSERT_FAIL_INLINE_ABORT
+# define CPP_ASSERT_FAIL CPP_ASSERT_FAIL_INLINE_THROW
 
 #endif
 
