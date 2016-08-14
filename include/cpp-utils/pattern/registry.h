@@ -105,9 +105,8 @@ private:
   {
   public:
     /// create new node in list
-    template<typename...Args>
-    node(Args&&...args)
-      : next_(head_), value_(std::forward<Args>(args)...)
+    node(entry&& e)
+      : next_(head_), value_(std::move(e))
     {
       head_ = this;
     }
