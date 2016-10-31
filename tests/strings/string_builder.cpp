@@ -5,6 +5,7 @@
 
 #include <cpp-utils/strings/string_builder.h>
 
+
 BOOST_AUTO_TEST_SUITE(StringBuilder_Tests)
 
 BOOST_AUTO_TEST_CASE(common_use_cases)
