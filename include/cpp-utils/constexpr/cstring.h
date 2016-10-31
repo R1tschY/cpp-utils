@@ -20,26 +20,53 @@
 /// IN THE SOFTWARE.
 ///
 
-#ifndef CPP_UTILS_CONSTEXPR_ARRAY_H_
-#define CPP_UTILS_CONSTEXPR_ARRAY_H_
+#pragma once
+
+#include <utility>
 
 namespace cpp {
 namespace constxpr {
 
-template<typename T, std::size_t N>
-struct carray
+template<typename Char, std::size_t N>
+struct basic_cstring
 {
 public:
+  constexpr basic_cstring() : data{}
+  { }
 
-  constexpr T& operator[](std::size_t n)
+  constexpr basic_cstring(std::initializer_list<Char> list) : data{}
   {
-    if (n >= N) throw std::range_error("n >= N");
+    if (list.size() != N)
+      throw std::range_error("list.size() != N");
+
+    std::size_t i = 0;
+    for (Char c : list)
+    {
+      data[i] = c;
+      i += 1;
+    }
+  }
+
+  constexpr basic_cstring(const char* str) : data{}
+  {
+    if (std::strlen(str) != N)
+      throw std::range_error("strlen(str) != N");
+
+    for (std::size_t i = 0; i < N; ++i)
+    {
+      data[i] = str[i];
+    }
+  }
+
+  constexpr Char& operator[](std::size_t n)
+  {
+    //if (n >= N) throw std::range_error("n > N");
     return data[n];
   }
 
-  constexpr const T& operator[](std::size_t n) const
+  constexpr const Char& operator[](std::size_t n) const
   {
-    if (n >= N) throw std::range_error("n >= N");
+    //if (n >= N) throw std::range_error("n > N");
     return data[n];
   }
 
@@ -47,9 +74,9 @@ public:
 
   template<std::size_t M>
   constexpr
-  carray<T, N+M> append(const carray<T, M>& other) const
+  basic_cstring<Char, N+M> append(const basic_cstring<Char, M>& other) const
   {
-    carray<T, N+M> result{};
+    basic_cstring<Char, N+M> result{};
 
     for (std::size_t i = 0; i < N; ++i)
     {
@@ -65,24 +92,23 @@ public:
   }
 
   // data
-  T data[N];
+  Char data[N + 1];
 };
 
-template<typename T, std::size_t N>
+template<typename Char, std::size_t N>
 constexpr inline
-carray<T, N> make_carray(const T (&data)[N])
+basic_cstring<Char, N-1> make_cstring(const Char (&data)[N])
 {
-  carray<T, N> result{};
-
-  for (std::size_t i = 0; i < N; ++i)
-  {
-    result[i] = data[i];
-  }
-
-  return result;
+  return basic_cstring<Char, N-1>{data};
 }
+
+template<std::size_t N>
+using cstring = basic_cstring<char, N>;
+
+template<std::size_t N>
+using cwstring = basic_cstring<wchar_t, N>;
 
 } // namespace constxpr
 } // namespace cpp
 
-#endif /* CPP_UTILS_CONSTEXPR_ARRAY_H_ */
+
