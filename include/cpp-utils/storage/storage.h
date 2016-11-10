@@ -6,7 +6,7 @@
 namespace cpp {
 
 template<typename T>
-using storage = typename std::aligned_storage<sizeof(T), std::alignment_of<T>::value>::type;
+using storage = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
 
 template<typename T>
 T& get(storage<T>& s) {

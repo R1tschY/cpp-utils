@@ -28,8 +28,6 @@
 #include <algorithm>
 #include <utility>
 #include "../algorithm/length.h"
-#include "../resolve.h"
-#include "../call.h"
 
 namespace cpp {
 namespace string {
