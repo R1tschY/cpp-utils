@@ -29,12 +29,12 @@
 
 namespace cpp {
 
-/* TODO
-template <typename Container>
+template <typename T, std::size_t N>
 constexpr inline
-auto length(const Container& t) -> decltype(t.size()) {
-  return t.size();
-}*/
+auto length(const T (&)[N]) -> std::size_t
+{
+  return N;
+}
 
 template <typename Container>
 constexpr inline
