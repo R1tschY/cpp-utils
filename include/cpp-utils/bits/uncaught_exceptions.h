@@ -30,7 +30,7 @@
 // impl decision
 // Credits to https://github.com/facebook/folly
 
-#if CPP_FEATURE_CHECK(__cpp_lib_uncaught_exceptions, 201411) || defined(__DOXYGEN__)
+#if (defined(__cpp_lib_uncaught_exceptions) && __cpp_lib_uncaught_exceptions >= 201411) || defined(__DOXYGEN__)
 # define CPP_UNCAUGHT_EXCEPTIONS_STD
 
 #elif CPP_GCC_COMPATIBLE
