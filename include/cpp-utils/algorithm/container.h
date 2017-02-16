@@ -2,6 +2,7 @@
 #define INCLUDE_CPP_UTILS_ALGORITHM_CONTAINER_H_
 
 #include <algorithm>
+#include <numeric>
 
 #include "../meta/void.h"
 #include "../meta/require.h"
