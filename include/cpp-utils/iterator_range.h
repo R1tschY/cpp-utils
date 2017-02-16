@@ -188,6 +188,15 @@ auto make_range(Range& range) -> iterator_range<decltype(std::begin(range)), dec
     > (std::begin(range), std::end(range));
 }
 
+/// \brief create a iterator_range with move_iterator's from a range
+/// \details uses std::begin and std::end to get the iterators of the range
+template<typename Range>
+auto make_move_range(Range& range)
+{
+  return make_range(
+    std::make_move_iterator(std::begin(range)),
+    std::make_move_iterator(std::end(range)));
+}
 
 }  // namespace cpp
 
