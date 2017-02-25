@@ -111,6 +111,20 @@ bool all_of(const Range1& r1, Func&& func)
   return std::all_of(std::begin(r1), std::end(r1), std::move(func));
 }
 
+/// \brief std::any_of for ranges
+template<typename Range1, typename Func>
+bool any_of(const Range1& r1, Func&& func)
+{
+  return std::any_of(std::begin(r1), std::end(r1), std::move(func));
+}
+
+/// \brief std::none_of for ranges
+template<typename Range1, typename Func>
+bool none_of(const Range1& r1, Func&& func)
+{
+  return std::none_of(std::begin(r1), std::end(r1), std::move(func));
+}
+
 /// \brief create std::initializer_list from brace-enclosed list
 template<typename T>
 std::initializer_list<T> make_list(std::initializer_list<T>&& t)
