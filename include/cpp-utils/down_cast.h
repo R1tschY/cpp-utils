@@ -36,6 +36,9 @@ namespace cpp {
 template<typename U, typename T>
 U* down_cast(T* t)
 {
+  if (t == nullptr)
+    return nullptr;
+
 #ifndef NDEBUG
   auto* u = dynamic_cast<U*>(t);
   cpp_assert(u != nullptr);
