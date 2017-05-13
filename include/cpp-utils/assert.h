@@ -79,7 +79,7 @@ AssertHandler set_assert_handler(AssertHandler handler);
 inline __attribute__((noreturn))
 void assert_fail_inline_abort(const char* expr, const char* func, const char* file, int line) noexcept
 {
-  std::printf("Assertion failed (%s) failed at %s (%s:%d)\n", expr, func, file, line);
+  ::printf("Assertion failed (%s) failed at %s (%s:%d)\n", expr, func, file, line);
   std::terminate();
 }
 
