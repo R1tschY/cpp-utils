@@ -102,7 +102,7 @@ public:
   const_reference at(std::size_t n) const { return get_internal().ptr[n]; }
 
   bool empty() const { return get_internal().n == 0; }
-  explicit operator bool () const { return empty(); }
+  explicit operator bool () const { return !empty(); }
 
   deleter_type& get_deleter() { return std::get<1>(data_); }
   const deleter_type& get_deleter() const { return std::get<1>(data_); }
