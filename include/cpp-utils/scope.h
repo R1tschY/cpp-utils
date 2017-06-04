@@ -37,6 +37,12 @@ private:
   bool invoke_ = true;
 };
 
+template<typename Func>
+scope_guard<Func> make_guard(Func&& func)
+{
+  return scope_guard<Func>(std::forward<Func>(func));
+}
+
 namespace detail {
 
 /// \brief helper class for scope_exit
@@ -136,6 +142,7 @@ scope_guard_ex<Func, false> operator+(scope_guard_onsuccess, Func&& fn)
 /// \endcode
 ///
 /// from Andrei Alexandrescu's talk at CppCon 2015 'Declarative Control Flow'
+#ifdef CPP_SCOPE_MACROS
 #define _scope_(x) x
 #define scope(x) _scope_(scope_##x)
 
@@ -150,6 +157,7 @@ scope_guard_ex<Func, false> operator+(scope_guard_onsuccess, Func&& fn)
 #define scope_success \
   auto CPP_UNIQUE_NAME(SCOPE_SUCCESS_STATE) \
   = ::cpp::detail::scope_guard_onsuccess() + [&]()
+#endif
 
 }  // namespace cpp
 
