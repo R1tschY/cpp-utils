@@ -158,6 +158,14 @@ void modify_each(Range& range, Func&& func)
   std::for_each(std::begin(range), std::end(range), std::move(func));
 }
 
+// find
+
+template<typename Range, typename T>
+auto find(Range& range, const T& t)
+{
+  return std::find(std::begin(range), std::end(range), t);
+}
+
 // find_if
 
 template<typename Range, typename Func>
