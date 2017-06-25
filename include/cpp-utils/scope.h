@@ -10,7 +10,7 @@
 namespace cpp {
 
 /// \brief a scope guard
-/// \details from https://github.com/facebook/folly
+/// \sa https://github.com/facebook/folly
 template<typename Func>
 class scope_guard
 {
@@ -20,13 +20,13 @@ public:
 
   scope_guard(scope_guard&& other)
   noexcept(std::is_nothrow_move_constructible<Func>::value)
-  : func_(std::move_if_noexcept(other.func_)), invoke_(other.invoke_)
+  : func_(std::move_if_noexcept(other.func_)), active_(other.active_)
   {
-    other.invoke_ = false;
+    other.active_ = false;
   }
 
   /// execute final action
-  ~scope_guard() noexcept { if (invoke_) func_(); }
+  ~scope_guard() { if (active_) func_(); }
 
   // non-copyable
   scope_guard(const scope_guard&) = delete;
@@ -34,7 +34,7 @@ public:
 
 private:
   Func func_;
-  bool invoke_ = true;
+  bool active_ = true;
 };
 
 template<typename Func>
@@ -136,28 +136,24 @@ scope_guard_ex<Func, false> operator+(scope_guard_onsuccess, Func&& fn)
 /// void f()
 /// {
 ///   void* p = malloc(42);
-///   scope(exit) { if (p) free(p); }
+///   scope_exit { if (p) free(p); }
 ///   // ...
 /// }
 /// \endcode
 ///
 /// from Andrei Alexandrescu's talk at CppCon 2015 'Declarative Control Flow'
-#ifdef CPP_SCOPE_MACROS
-#define _scope_(x) x
-#define scope(x) _scope_(scope_##x)
 
 #define scope_exit \
   auto CPP_UNIQUE_NAME(SCOPE_EXIT_STATE) \
-  = ::cpp::detail::scope_guard_onexit() + [&]()
+    = ::cpp::detail::scope_guard_onexit() + [&]()
 
 #define scope_fail \
   auto CPP_UNIQUE_NAME(SCOPE_FAIL_STATE) \
-  = ::cpp::detail::scope_guard_onfail() + [&]() noexcept
+    = ::cpp::detail::scope_guard_onfail() + [&]() noexcept
 
 #define scope_success \
   auto CPP_UNIQUE_NAME(SCOPE_SUCCESS_STATE) \
-  = ::cpp::detail::scope_guard_onsuccess() + [&]()
-#endif
+    = ::cpp::detail::scope_guard_onsuccess() + [&]()
 
 }  // namespace cpp
 
