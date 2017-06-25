@@ -105,7 +105,7 @@ public:
   {
     pop_front(pos);
 
-    end_ = std::advance(begin_, std::min(size(), n));
+    end_ = std::next(begin_, std::min(size(), n));
   }
 
   /// \pre T1 == T2
@@ -124,39 +124,39 @@ public:
   auto operator[](std::size_t index) -> decltype(*begin())
   {
     cpp_assert(index < size());
-    return *std::advance(begin_, index);
+    return *std::next(begin_, index);
   }
 
   auto operator[](std::size_t index) const -> decltype(*begin())
   {
     cpp_assert(index < size());
-    return *std::advance(begin_, index);
+    return *std::next(begin_, index);
   }
 
   auto at(std::size_t index) -> decltype(*begin())
   {
     cpp_assert(index < size());
-    return *std::advance(begin_, index);
+    return *std::next(begin_, index);
   }
 
   auto at(std::size_t index) const -> decltype(*begin())
   {
     cpp_assert(index < size());
-    return *std::advance(begin_, index);
+    return *std::next(begin_, index);
   }
 
   /// \pre T1 == T2, T1 == bidirectional_iterator
-  auto back(std::size_t index) -> decltype(*begin())
+  auto back(std::size_t index = 0) -> decltype(*begin())
   {
     cpp_assert(index < size());
-    return *std::advance(end_, -index);
+    return *std::next(end_, -index);
   }
 
   /// \pre T1 == T2, T1 == bidirectional_iterator
-  auto back(std::size_t index) const -> decltype(*begin())
+  auto back(std::size_t index = 0) const -> decltype(*begin())
   {
     cpp_assert(index < size());
-    return *std::advance(end_, -index);
+    return *std::next(end_, -index);
   }
 
 private:
