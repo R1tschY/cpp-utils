@@ -40,7 +40,7 @@ public:
   T2 end() const { return end_; }
 
   constexpr bool empty() const { return begin_ == end_; }
-  constexpr explicit operator bool () const { return empty(); }
+  constexpr explicit operator bool () const { return !empty(); }
 
   /// \bug create cpp:distance for T1 != T2
   constexpr std::size_t size() const { return std::distance(begin_, end_); }
