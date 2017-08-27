@@ -33,6 +33,9 @@ constexpr std::add_const_t<T>& as_const(T& t) noexcept
   return t;
 }
 
+template <class T>
+void as_const(const T&&) = delete;
+
 } // namespace cpp
 
 
