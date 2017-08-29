@@ -6,6 +6,7 @@
 
 #include "preprocessor.h"
 #include "bits/uncaught_exceptions.h"
+#include "assert.h"
 
 namespace cpp {
 
@@ -192,6 +193,56 @@ private:
   detail::unwinding_indicator ind_;
 };
 
+template<typename Func1, typename Func2>
+class transaction_guard
+{
+public:
+  explicit transaction_guard(const Func1& success_fn, const Func2& failure_fn)
+  : success_fn_(success_fn), failure_fn_(failure_fn)
+  { }
+
+  explicit transaction_guard(Func1&& success_fn, Func2&& failure_fn)
+  : success_fn_(std::move(success_fn)), failure_fn_(std::move(failure_fn))
+  { }
+
+  ~transaction_guard() noexcept(true)
+  {
+    if (!active_)
+      return;
+
+    if (ind_.unwinding())
+    {
+      failure_fn_();
+    }
+    else
+    {
+      success_fn_();
+    }
+  }
+
+  void rollback()
+  {
+    cpp_assert(active_ == true);
+
+    active_ = false;
+    failure_fn_();
+  }
+
+  void commit()
+  {
+    cpp_assert(active_ == true);
+
+    active_ = false;
+    success_fn_();
+  }
+
+private:
+  Func1 success_fn_;
+  Func2 failure_fn_;
+  detail::unwinding_indicator ind_;
+  bool active_ = true;
+};
+
 
 template<typename Func1, typename Func2>
 scope_transaction<Func1, Func2> make_transaction(
@@ -200,6 +251,17 @@ scope_transaction<Func1, Func2> make_transaction(
 )
 {
   return scope_transaction<Func1, Func2>(
+    std::forward<Func1>(success), std::forward<Func2>(failure)
+  );
+}
+
+template<typename Func1, typename Func2>
+transaction_guard<Func1, Func2> make_transaction_guard(
+  Func1&& success,
+  Func2&& failure
+)
+{
+  return transaction_guard<Func1, Func2>(
     std::forward<Func1>(success), std::forward<Func2>(failure)
   );
 }

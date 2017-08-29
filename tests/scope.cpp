@@ -68,4 +68,47 @@ BOOST_AUTO_TEST_CASE(test_transaction)
   BOOST_CHECK_EQUAL(r, 42);
 }
 
+BOOST_AUTO_TEST_CASE(test_transaction_guard)
+{
+  int r = 0;
+  try {
+    auto out = cpp::make_transaction_guard([&](){ r = 42; }, [&](){ r = -1; });
+    throw std::runtime_error("fail");
+  }
+  catch (...) { }
+  BOOST_CHECK_EQUAL(r, -1);
+
+  r = 0;
+  try {
+    auto out = cpp::make_transaction_guard([&](){ r = 42; }, [&](){ r = -1; });
+  }
+  catch (...) { }
+  BOOST_CHECK_EQUAL(r, 42);
+
+  r = 0;
+  try {
+    auto out = cpp::make_transaction_guard([&](){ r = 42; }, [&](){ r = -1; });
+    out.commit();
+  }
+  catch (...) { }
+  BOOST_CHECK_EQUAL(r, 42);
+
+  r = 0;
+  try {
+    auto out = cpp::make_transaction_guard([&](){ r = 42; }, [&](){ r = -1; });
+    out.rollback();
+  }
+  catch (...) { }
+  BOOST_CHECK_EQUAL(r, -1);
+
+  r = 0;
+  try {
+    auto out = cpp::make_transaction_guard([&](){ r = 42; }, [&](){ r = -1; });
+    out.commit();
+    throw std::runtime_error("fail");
+  }
+  catch (...) { }
+  BOOST_CHECK_EQUAL(r, 42);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
