@@ -43,6 +43,12 @@ scope_guard<Func> make_guard(Func&& func)
   return scope_guard<Func>(std::forward<Func>(func));
 }
 
+template<typename Func>
+scope_guard<Func> finally(Func&& func)
+{
+  return make_guard(std::forward<Func>(func));
+}
+
 namespace detail {
 
 /// \brief helper class for scope_exit
@@ -154,6 +160,49 @@ scope_guard_ex<Func, false> operator+(scope_guard_onsuccess, Func&& fn)
 #define scope_success \
   auto CPP_UNIQUE_NAME(SCOPE_SUCCESS_STATE) \
     = ::cpp::detail::scope_guard_onsuccess() + [&]()
+
+
+template<typename Func1, typename Func2>
+class scope_transaction
+{
+public:
+  explicit scope_transaction(const Func1& success_fn, const Func2& failure_fn)
+  : success_fn_(success_fn), failure_fn_(failure_fn)
+  { }
+
+  explicit scope_transaction(Func1&& success_fn, Func2&& failure_fn)
+  : success_fn_(std::move(success_fn)), failure_fn_(std::move(failure_fn))
+  { }
+
+  ~scope_transaction() noexcept(true)
+  {
+    if (ind_.unwinding())
+    {
+      failure_fn_();
+    }
+    else
+    {
+      success_fn_();
+    }
+  }
+
+private:
+  Func1 success_fn_;
+  Func2 failure_fn_;
+  detail::unwinding_indicator ind_;
+};
+
+
+template<typename Func1, typename Func2>
+scope_transaction<Func1, Func2> make_transaction(
+  Func1&& success,
+  Func2&& failure
+)
+{
+  return scope_transaction<Func1, Func2>(
+    std::forward<Func1>(success), std::forward<Func2>(failure)
+  );
+}
 
 }  // namespace cpp
 

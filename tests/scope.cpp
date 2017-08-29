@@ -50,4 +50,22 @@ BOOST_AUTO_TEST_CASE(scope_success_)
   BOOST_CHECK_EQUAL(r, 42);
 }
 
+BOOST_AUTO_TEST_CASE(test_transaction)
+{
+  int r = 0;
+  try {
+    auto out = cpp::make_transaction([&](){ r = 42; }, [&](){ r = -1; });
+    throw std::runtime_error("fail");
+  }
+  catch (...) { }
+  BOOST_CHECK_EQUAL(r, -1);
+
+  r = 0;
+  try {
+    auto out = cpp::make_transaction([&](){ r = 42; }, [&](){ r = -1; });
+  }
+  catch (...) { }
+  BOOST_CHECK_EQUAL(r, 42);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
