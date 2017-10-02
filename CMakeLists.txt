@@ -31,7 +31,6 @@ endif()
 
 # Testing
 if (NOT CPP_UTILS_NO_TESTS)
-	add_custom_target(check)
 	add_subdirectory(tests)
 endif()
 

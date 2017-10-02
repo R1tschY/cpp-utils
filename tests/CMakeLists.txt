@@ -18,6 +18,10 @@ add_executable(test-cpp-utils EXCLUDE_FROM_ALL ${cpp_utils_tests_SOURCES})
 target_link_libraries(test-cpp-utils cpp-utils ${Boost_LIBRARIES})
 
 # make check
+if(NOT TARGET check)
+   add_custom_target(check)
+endif()
+
 add_custom_command(TARGET test-cpp-utils
                    POST_BUILD
                    COMMAND test-cpp-utils -i -s --detect_fp_exceptions=y -l message
