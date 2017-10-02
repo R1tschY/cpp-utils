@@ -98,8 +98,25 @@ void assert_fail_inline_throw(const char* expr, const char* func, const char* fi
 /// defaults CPP_ASSERT_FAIL to CPP_ASSERT_FAIL_INLINE_THROW
 #ifndef CPP_ASSERT_FAIL
 # define CPP_ASSERT_FAIL CPP_ASSERT_FAIL_INLINE_THROW
-
 #endif
+
+// require / ensure
+
+inline void require(bool condition, const char* message)
+{
+  if (!condition)
+  {
+    throw std::invalid_argument(message);
+  }
+}
+
+inline void ensure(bool condition, const char* message)
+{
+  if (!condition)
+  {
+    throw std::runtime_error(message);
+  }
+}
 
 } // namespace cpp
 
