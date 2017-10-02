@@ -23,7 +23,13 @@
 namespace cpp {
 namespace range {
 
-// find_if
+template<typename Range, typename T>
+auto find(Range& range, const T& t)
+{
+  auto last = std::end(range);
+  auto first = std::find(std::begin(range), last, t);
+  return cpp::make_range(first, last);
+}
 
 template<typename Range, typename Func>
 auto find_if(Range& range, Func func)
