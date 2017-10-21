@@ -174,6 +174,15 @@ auto find_if(Range& range, Func func)
   return std::find_if(std::begin(range), std::end(range), std::move(func));
 }
 
+// has
+
+template<typename Range, typename T>
+bool has(Range& range, const T& t)
+{
+  auto last = std::end(range);
+  return std::find(std::begin(range), last, t) != last;
+}
+
 // accumulate
 
 template<typename Range, typename T>
