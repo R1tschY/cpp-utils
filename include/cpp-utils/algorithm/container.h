@@ -86,6 +86,27 @@ void sort(Range& r)
   std::sort(std::begin(r), std::end(r));
 }
 
+/// \brief std::sort for ranges
+template<typename Range, typename Func>
+void sort(Range& r, Func&& func)
+{
+  std::sort(std::begin(r), std::end(r), std::forward<Func>(func));
+}
+
+/// \brief std::is_sorted for ranges
+template<typename Range>
+bool is_sorted(Range& r)
+{
+  return std::is_sorted(std::begin(r), std::end(r));
+}
+
+/// \brief std::is_sorted for ranges
+template<typename Range, typename Func>
+bool is_sorted(Range& r, Func&& func)
+{
+  return std::is_sorted(std::begin(r), std::end(r), std::forward<Func>(func));
+}
+
 /// \brief std::for_each for ranges
 template<typename Range1, typename Func>
 void for_each(Range1& r1, Func&& func)
@@ -141,7 +162,7 @@ ForwardIt binary_find(ForwardIt first, ForwardIt last, const T& value, Compare c
   // This is stricter then lower_bound requirement (see above)
 
   first = std::lower_bound(first, last, value, comp);
-  return first != last && (!comp(value, *first) ? first : last);
+  return (first != last && !comp(value, *first)) ? first : last;
 }
 
 // for_each
