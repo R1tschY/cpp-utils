@@ -32,6 +32,8 @@
   (CPP_CLANG >= CPP_CLANG_VERSION_FUNC(major, minor))
 
 
+#else
+#define CPP_CLANG_VERSION_CHECK(major, minor) 0
 #endif
 
 #ifdef __GNUC__
@@ -45,6 +47,8 @@
      (CPP_GCC >= CPP_CLANG_VERSION_FUNC(major, minor))
 # endif
 
+#else
+#define CPP_GCC_VERSION_CHECK(major, minor, patch) 0
 #endif
 
 #ifdef _MSC_VER
@@ -52,6 +56,8 @@
 # define CPP_MSC _MSC_VER
 # define CPP_MSC_VERSION_CHECK(version) (CPP_MSC >= version)
 
+#else
+#define CPP_MSC_VERSION_CHECK(version) 0
 #endif
 
 #define CPP_FEATURE_CHECK_I(x, version) (defined(x) && x >= version)
